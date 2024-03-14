@@ -88,7 +88,7 @@ export async function fetchCardStats(period: Period): Promise<Record<string, num
 export async function fetchStats(period: Period, forGraph: boolean) {
 
   const AsyncAPI3Adoptation = await fetchData(`SELECT percentage(sum(asyncapi_adoption.action.finished),  asyncapi_version LIKE '3.%.%') AS 'result' FROM Metric WHERE action = 'validate' AND validation_result = 'valid' SINCE ${period} ${forGraph ? 'TIMESERIES' : ''}`);
-  const CreatedFiles = await fetchData(`SELECT sum(asyncapi_adoption.action.finished) as 'result' FROM Metric WHERE action = 'new:file' SINCE ${period}  ${forGraph ? 'TIMESERIES' : ''}`);
+  const CreatedFiles = await fetchData(`SELECT sum(asyncapi_adoption.action.finished) as 'result' FROM Metric WHERE action = 'new:file' OR action = 'new' SINCE ${period}  ${forGraph ? 'TIMESERIES' : ''}`);
   const systemErrors = await fetchData(`SELECT sum(asyncapi_adoption.action.finished) as 'result' FROM Metric WHERE success = false SINCE ${period}  ${forGraph ? 'TIMESERIES' : ''}`);
   const validationErrors = await fetchData(`SELECT sum(asyncapi_adoption.action.finished) as 'result' FROM Metric WHERE action = 'validate' AND validation_result = 'invalid' SINCE ${period}  ${forGraph ? 'TIMESERIES' : ''}`);
 
