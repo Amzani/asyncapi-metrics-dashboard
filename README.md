@@ -1,6 +1,6 @@
 # AsyncAPI Metrics Dashboard
 
-This Next.js 14 application parses AsyncAPI metrics from New Relic and displays them for relevant groups, providing a dashboard for viewing these statistics. It employs a Static Site Generation (SSG) model, pre-rendering pages at build time, and updates the data only once daily to ensure optimal performance.
+This Next.js 14 application parses AsyncAPI metrics from New Relic and displays them for relevant [Working Groups](https://github.com/orgs/asyncapi/discussions/1037), providing a dashboard for viewing their statistics. It employs a Static Site Generation (SSG) model, pre-rendering pages at build time, and updates the data only once daily to ensure optimal performance.
 
 ## Getting Started
 
