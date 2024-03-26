@@ -1,67 +1,55 @@
-'use client';
-import { AreaChart, Card, Title } from '@tremor/react';
+"use client"
+import { ChartPoint } from "@/newrelic_api"
+import { AreaChart } from "@tremor/react"
+import numeral from "numeral"
 
-const chartdata = [
-  {
-    date: 'Jan 23',
-    Running: 167,
-  },
-  {
-    date: 'Feb 23',
-    Running: 125,
-  },
-  {
-    date: 'Mar 23',
-    Running: 156,
-  },
-  {
-    date: 'Apr 23',
-    Running: 165,
-  },
-  {
-    date: 'May 23',
-    Running: 153,
-  },
-  {
-    date: 'Jun 23',
-    Running: 124,
-  },
-];
+type ChartLineProps = {
+  title: string
+  data: ChartPoint[]
+  category: string
+  sign?: string
+}
 
-export function ChartLine() {
+export function ChartLine({ title, data, category, sign }: ChartLineProps) {
+  const filteredData = data.map((point) => {
+    const date = new Date(point.endTimeSeconds * 1000)
+    const formattedDate = date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    return {
+      date: formattedDate,
+      [category]: point.result || 0,
+    }
+  })
   const customTooltip = (props: any) => {
-    const { payload, active } = props;
-    if (!active || !payload) return null;
+    const { payload, active } = props
+    if (!active || !payload) return null
     return (
       <div className="w-56 rounded-tremor-default border border-tremor-border bg-tremor-background p-2 text-tremor-default shadow-tremor-dropdown">
         {payload.map((category: any, idx: any) => (
           <div key={idx} className="flex flex-1 space-x-2.5">
-            <div
-              className={`flex w-1 flex-col bg-${category.color}-500 rounded`}
-            />
+            <div className={`flex w-1 flex-col bg-${category.color}-500 rounded`} />
             <div className="space-y-1">
               <p className="text-tremor-content">{category.dataKey}</p>
               <p className="font-medium text-tremor-content-emphasis">
-                {category.value} bpm
+                {sign ? `${category.value}${sign}` : numeral(category.value).format("0a")}
               </p>
             </div>
           </div>
         ))}
       </div>
-    );
-  };
+    )
+  }
   return (
-    <>
-      <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Average BPM</h3>
+    <div className="flex flex-col">
+      <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{title}</h3>
       <AreaChart
         className="mt-4 h-72"
-        data={chartdata}
+        data={filteredData}
         index="date"
-        categories={['Running']}
-        colors={['blue']}
+        categories={[category]}
+        colors={["blue"]}
         yAxisWidth={30}
         customTooltip={customTooltip}
       />
-    </>
-  );
+    </div>
+  )
 }
