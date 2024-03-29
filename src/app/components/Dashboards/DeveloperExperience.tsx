@@ -17,7 +17,11 @@ const PERCENTAGE_FORMAT = "0.00%"
 async function DeveloperExperience({ period }: DeveloperExperienceProps) {
   const unit = period === "1 day ago" ? "hour" : "day";
   const { asyncAPI3Adoptation, createdFiles, systemErrors, validationErrors } = await fetchCardStats(period)
+
+  // Fetch data specifically for the graphs
   const { asyncAPI3AdoptationG, createdFilesG, systemErrorsG, validationErrorsG } = await fetchGraphStats(period)
+
+  // these two are special since they rely on aggregated data from New Relic https://github.com/Amzani/asyncapi-metrics-dashboard/issues/8
   const timeToFirstAPIDesign = await fetchTimeToFirstAPIDesign(period)
   const timeToFixValidationError = await fetchTimeToFixValidationError(period)
   return (
@@ -34,11 +38,11 @@ async function DeveloperExperience({ period }: DeveloperExperienceProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
         <ChartLine title="Time to First API Design" data={timeToFirstAPIDesign.graphData} category="Time to First API Design" unit={unit} format={TIME_FORMAT}/>
-          <ChartLine title="Time to Fix Validation Error" data={timeToFixValidationError.graphData} category="Time to Fix Validation Errors" unit={unit} format={TIME_FORMAT}/>
-          <ChartLine title="AsyncAPI 3.x.x Adoption" data={asyncAPI3AdoptationG} category="V3Adoption" sign="%" unit={unit} format={PERCENTAGE_FORMAT}/>
-          <ChartLine title="Created AsyncAPI Files" data={createdFilesG} category="CreatedFiles" unit={unit} format={NUMBER_FORMAT}/>
-          <ChartLine title="system Errors" data={systemErrorsG} category="SystemErrors" unit={unit} format={NUMBER_FORMAT}/>
-          <ChartLine title="Validation Errors" data={validationErrorsG} category="ValidationErrors" unit={unit} format={NUMBER_FORMAT}/>
+          <ChartLine title="Time to Fix Validation Error" data={timeToFixValidationError.graphData} category="Time to Fix a Validation Error" unit={unit} format={TIME_FORMAT}/>
+          <ChartLine title="AsyncAPI 3.x.x Adoption" data={asyncAPI3AdoptationG} category="V3 Adoption" sign="%" unit={unit} format={PERCENTAGE_FORMAT}/>
+          <ChartLine title="Created AsyncAPI Files" data={createdFilesG} category="Created Files" unit={unit} format={NUMBER_FORMAT}/>
+          <ChartLine title="system Errors" data={systemErrorsG} category="System Errors" unit={unit} format={NUMBER_FORMAT}/>
+          <ChartLine title="Validation Errors" data={validationErrorsG} category="Validation Errors" unit={unit} format={NUMBER_FORMAT}/>
         </div>
 
       </div>
