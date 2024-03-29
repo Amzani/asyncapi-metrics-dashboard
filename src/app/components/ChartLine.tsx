@@ -1,22 +1,24 @@
-"use client"
+'use client'
 import { ChartPoint } from "@/newrelic_api"
 import { AreaChart } from "@tremor/react"
-import numeral from "numeral"
+import numeral from 'numeral'
 
 type ChartLineProps = {
   title: string
   data: ChartPoint[]
   category: string
   sign?: string
+  unit: "day" | "hour"
+  format: string
 }
 
-export function ChartLine({ title, data, category, sign }: ChartLineProps) {
+export function ChartLine({ title, data, category , unit, format  }: ChartLineProps) {
   const filteredData = data.map((point) => {
-    const date = new Date(point.endTimeSeconds * 1000)
-    const formattedDate = date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    const date = new Date(point.timestamp)
+    const formattedDate = unit === "day" ? date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" })
     return {
       date: formattedDate,
-      [category]: point.result || 0,
+      [category]: point.value,
     }
   })
   const customTooltip = (props: any) => {
@@ -30,7 +32,7 @@ export function ChartLine({ title, data, category, sign }: ChartLineProps) {
             <div className="space-y-1">
               <p className="text-tremor-content">{category.dataKey}</p>
               <p className="font-medium text-tremor-content-emphasis">
-                {sign ? `${category.value}${sign}` : numeral(category.value).format("0a")}
+                {numeral(category.value).format(format)}
               </p>
             </div>
           </div>
